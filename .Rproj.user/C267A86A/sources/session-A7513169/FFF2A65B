@@ -1,0 +1,26 @@
+{
+    "id": "FFF2A65B",
+    "path": "F:/Meu repositório/shiny-app-fundao/app_fundao/onibus_fundao/app.R",
+    "project_path": "app_fundao/onibus_fundao/app.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1665522830913.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "47,32",
+        "scrollLine": "39"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1665523466,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1665523466071,
+    "read_only": false,
+    "read_only_alternatives": []
+}
