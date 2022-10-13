@@ -18,13 +18,16 @@ library(dipsaus)
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
+  shinyjs::useShinyjs(), # autorefresh
+
   # Application title
-  titlePanel("Ônibus para o Fundão"),
+  titlePanel("Cadê o meu ônibus?"),
 
   # Sidebar with a slider input for number of bins
   sidebarLayout(
 
     sidebarPanel(
+      p("Encontre os ônibus que vão para o Fundão em tempo real."),
 
       selectInput("linha",
                   "Linha de ônibus",
@@ -39,7 +42,6 @@ ui <- fluidPage(
 
     # Show a plot of the generated distribution
     mainPanel(
-      actionButtonStyled('recalc', 'Atualiza aí mermão', type = 'success'),
       p(),
       leafletOutput("mymap")
       )
@@ -52,6 +54,14 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+
+    shinyjs::runjs(
+      "function reload_page() {
+      window.location.reload();
+      setTimeout(reload_page, 60000);
+    }
+    setTimeout(reload_page, 60000);
+    ")
 
     query_gtfs <- function(linha, ida_volta) {
 
@@ -95,31 +105,6 @@ server <- function(input, output) {
 
   }
 
-
-  observeEvent(input$recalc, ignoreInit = FALSE, ignoreNULL = FALSE, {
-
-    # pontos <- query_sppo(linha = input$linha)
-    #
-    # output$mymap <- renderLeaflet({
-    #
-    # leaflet() %>%
-    #   addProviderTiles(providers$CartoDB.Positron) %>%
-    #   addPolylines(data = sf::st_zm(shape_fundao)) %>%
-    #   addCircleMarkers(
-    #     data = pontos,
-    #     color = 'red',
-    #     fillOpacity = 0.5,
-    #     radius = 3,
-    #     lng = ~longitude,
-    #     lat = ~latitude
-    #   )
-    #
-    # })
-
-  })
-
-
-
   # fazer mapa com base nisso
   output$mymap <- renderLeaflet({
 
@@ -130,6 +115,7 @@ server <- function(input, output) {
     leaflet() %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
       addPolylines(data = sf::st_zm(shape_fundao)) %>%
+
       addCircleMarkers(
         data = pontos,
         color = 'red',
@@ -143,6 +129,3 @@ server <- function(input, output) {
 }
 
 shinyApp(ui = ui, server = server)
-
-# colocar o botao do buy me a coffee no shiny
-# incluir desenvolvido por igor laltuf
