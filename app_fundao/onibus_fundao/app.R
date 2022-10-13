@@ -8,6 +8,7 @@ library(tidyverse)
 library(magrittr)
 library(jsonlite)
 library(dipsaus)
+library(htmltools)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -22,6 +23,7 @@ ui <- fluidPage(
 
     sidebarPanel(
       p("Encontre os ônibus que vão para o Fundão em tempo real."),
+      p("A página atualiza automaticamente a cada minuto."),
 
       selectInput("linha",
                   "Linha de ônibus",
@@ -30,10 +32,15 @@ ui <- fluidPage(
                     '936', '945')),
 
       selectInput("sentido",
-                  "Indo ou voltando do Fundão",
+                  "Sentido (Ida ou Volta)",
                   c('I', 'V')),
       print(paste0("Desenvolvido por ")),
-      a(href = "https://igorlaltuf.github.io/", "Igor Laltuf")
+      a(href = "https://igorlaltuf.github.io/", "Igor Laltuf"),
+      p(),
+      tags$a(
+        href = "https://www.buymeacoffee.com/igorlaltuf",
+        tags$img(src = "https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png")
+      )
     ),
 
     # Show map
@@ -56,6 +63,9 @@ server <- function(input, output) {
     }
     setTimeout(reload_page, 60000);
     ")
+
+
+
 
     query_gtfs <- function(linha, ida_volta) {
 
@@ -83,7 +93,7 @@ server <- function(input, output) {
 
     st_transform(shape_fundao, st_crs(5641))
 
-    shape_buffer <- st_buffer(shape_fundao, 50) # distance in meters
+    shape_buffer <- st_buffer(shape_fundao, 25) # distance in meters
 
     pontos <- st_as_sf(x, coords = c('longitude','latitude'), crs = 5641)
 
