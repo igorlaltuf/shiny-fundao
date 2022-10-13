@@ -33,7 +33,7 @@ ui <- fluidPage(
                     '936', '945')),
 
       selectInput(inputId = "sentido",
-                  label = "Sentido (Ida ou Volta)",
+                  label = "Sentido",
                   choices = c('Ida' = 'I', 'Volta' = 'V')),
       print(paste0("Desenvolvido por ")),
       a(href = "https://igorlaltuf.github.io/", "Igor Laltuf"),
