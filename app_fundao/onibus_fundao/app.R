@@ -50,7 +50,7 @@ ui <- fluidPage(
     mainPanel(
       p(),
       geoloc::onload_geoloc(),
-      leafletOutput("mymap", height = "95vh")
+      leafletOutput("mymap", height = "95vh", width = "90%")
       )
     ),
   hr()
