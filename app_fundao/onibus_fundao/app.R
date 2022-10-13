@@ -24,6 +24,7 @@ ui <- fluidPage(
     sidebarPanel(
       p("Encontre os ônibus que vão para o Fundão em tempo real."),
       p("A página atualiza automaticamente a cada minuto."),
+      p("Importante: ative o seu GPS para o mapa carregar."),
 
       selectInput("linha",
                   "Linha de ônibus",
@@ -31,9 +32,9 @@ ui <- fluidPage(
                     '634', '635', '663', '696', '910A', '913', '914', '915',
                     '936', '945')),
 
-      selectInput("sentido",
-                  "Sentido (Ida ou Volta)",
-                  c('I', 'V')),
+      selectInput(inputId = "sentido",
+                  label = "Sentido (Ida ou Volta)",
+                  choices = c('Ida' = 'I', 'Volta' = 'V')),
       print(paste0("Desenvolvido por ")),
       a(href = "https://igorlaltuf.github.io/", "Igor Laltuf"),
       p(),
