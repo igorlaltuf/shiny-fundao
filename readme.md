@@ -1,0 +1,17 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# Web App Partiu Fundão
+
+Este Web App cruza os dados da API de GPS disponibilizada pela
+prefeitura com os shapes do arquivo GTFS. O resultado é esse site que
+permite ver onde estão todos os ônibus municipais que passam pelo
+Fundão.
+
+Para acessar o App: <https://igorlaltuf.shinyapps.io/onibus_fundao/>
+
+<!-- badges: start -->
+
+[![“Buy Me A
+Coffee”](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/igorlaltuf)
+<!-- badges: end -->
