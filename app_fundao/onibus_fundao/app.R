@@ -1,5 +1,5 @@
 
-
+# carregar pacotes -----------------------
 
 library(shiny)
 library(leaflet)
@@ -15,9 +15,9 @@ ui <- fluidPage(
   shinyjs::useShinyjs(), # autorefresh
 
   # Application title
-  titlePanel("Cadê o meu ônibus?"),
+  titlePanel("Partiu Fundão!"),
 
-  # Sidebar with a slider input for number of bins
+  # Sidebar
   sidebarLayout(
 
     sidebarPanel(
@@ -31,23 +31,22 @@ ui <- fluidPage(
 
       selectInput("sentido",
                   "Indo ou voltando do Fundão",
-                  c('I', 'V'))
+                  c('I', 'V')),
+      print(paste0("Desenvolvido por ")),
+      a(href = "https://igorlaltuf.github.io/", "Igor Laltuf")
     ),
 
-    # Show a plot of the generated distribution
+    # Show map
     mainPanel(
       p(),
       geoloc::onload_geoloc(),
-      leafletOutput("mymap")
+      leafletOutput("mymap", height = "95vh")
       )
     ),
-  hr(),
-  print(paste0("Desenvolvido por ")),
-  tags$a(href = "https://igorlaltuf.github.io/", "Igor Laltuf")
+  hr()
   )
 
-
-# Define server logic required to draw a histogram
+# Define server logic required to draw the map
 server <- function(input, output) {
 
     shinyjs::runjs(
@@ -68,8 +67,7 @@ server <- function(input, output) {
     return(shape_fundao)
   }
 
-  # acessar dados de GPS da API da prefeitura ----------------------------------
-
+# acess API with GPS data from City Hall -------------------------------------
   query_sppo <- function(linha) {
 
     shape_fundao <- query_gtfs(linha)
@@ -81,26 +79,29 @@ server <- function(input, output) {
           mutate(latitude = as.numeric(latitude),
                  longitude = as.numeric(longitude))
 
-    # Usar o EPSG 5641 para projecao em metros
+    # Use the EPSG 5641 projection to calculate the values in meters
 
     st_transform(shape_fundao, st_crs(5641))
-    shape_buffer <- st_buffer(shape_fundao, 50) # distância em metros por causa da projeção que usei
 
-    # plot(shape_buffer$geometry)
+    shape_buffer <- st_buffer(shape_fundao, 50) # distance in meters
+
     pontos <- st_as_sf(x, coords = c('longitude','latitude'), crs = 5641)
+
     st_transform(pontos, st_crs(5641))
-    # plot(pontos$geometry)
+
     st_crs(shape_buffer) <- 5641
+
     st_transform(shape_buffer, st_crs(5641))
+
     pontos <- st_intersection(pontos, shape_buffer)
-    # plot(pontos$geometry)
+
     pontos <- left_join(pontos, x)
 
     return(pontos)
 
   }
 
-  # fazer mapa com base nisso
+  # create the map with leaflet
   output$mymap <- renderLeaflet({
 
     shape_fundao <- query_gtfs(linha = input$linha, ida_volta = input$sentido)
@@ -108,12 +109,13 @@ server <- function(input, output) {
     pontos <- query_sppo(linha = input$linha)
 
     req(input$geoloc_lon)
+
     req(input$geoloc_lat)
 
     leaflet() %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
       addPolylines(data = sf::st_zm(shape_fundao)) %>%
-      setView(as.numeric(input$geoloc_lon), as.numeric(input$geoloc_lat), zoom = 17) %>%
+      setView(as.numeric(input$geoloc_lon), as.numeric(input$geoloc_lat), zoom = 16) %>%
       addCircleMarkers(
         data = pontos,
         color = 'red',
