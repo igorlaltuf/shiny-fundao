@@ -131,7 +131,8 @@ server <- function(input, output) {
         radius = 3,
         lng = ~longitude,
         lat = ~latitude
-      )
+      ) %>%
+      addMarkers(as.numeric(input$geoloc_lon), as.numeric(input$geoloc_lat), label = "Você está aqui!")
   })
 
 }
