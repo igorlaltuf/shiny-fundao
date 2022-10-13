@@ -1,5 +1,5 @@
 
-# carregar pacotes -----------------------
+# Load packages -----------------------
 
 library(shiny)
 library(leaflet)
@@ -10,7 +10,7 @@ library(jsonlite)
 library(dipsaus)
 library(htmltools)
 
-# Define UI for application that draws a histogram
+# Define UI for application
 ui <- fluidPage(
 
   shinyjs::useShinyjs(), # autorefresh
@@ -65,8 +65,6 @@ server <- function(input, output) {
     ")
 
 
-
-
     query_gtfs <- function(linha, ida_volta) {
 
     # retornar shape da linha
@@ -77,7 +75,7 @@ server <- function(input, output) {
     return(shape_fundao)
   }
 
-# acess API with GPS data from City Hall -------------------------------------
+# Access API with GPS data from City Hall -------------------------------------
   query_sppo <- function(linha) {
 
     shape_fundao <- query_gtfs(linha)
