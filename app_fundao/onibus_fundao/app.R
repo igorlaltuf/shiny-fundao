@@ -23,7 +23,7 @@ ui <- fluidPage(
 
     sidebarPanel(
       p("Encontre os ônibus que vão para o Fundão em tempo real."),
-      p("A página atualiza automaticamente a cada minuto."),
+      # p("A página atualiza automaticamente a cada minuto."),
       p("Importante: ative o seu GPS para o mapa carregar."),
 
       selectInput("linha",
@@ -37,6 +37,9 @@ ui <- fluidPage(
                   label = "Sentido",
                   choices = c('Ida (sentido Fundão)' = 'I', 'Volta' = 'V'),
                   selectize = F),
+      p(),
+      actionButtonStyled("atualizar", "Atualizar", type = 'success'),
+      p(),
       print(paste0("Desenvolvido por ")),
       a(href = "https://igorlaltuf.github.io/", "Igor Laltuf"),
       p(),
@@ -58,15 +61,6 @@ ui <- fluidPage(
 
 # Define server logic required to draw the map
 server <- function(input, output) {
-
-    shinyjs::runjs(
-      "function reload_page() {
-      window.location.reload();
-      setTimeout(reload_page, 60000);
-    }
-    setTimeout(reload_page, 60000);
-    ")
-
 
     query_gtfs <- function(linha, ida_volta) {
 
@@ -137,6 +131,47 @@ server <- function(input, output) {
       ) %>%
       addMarkers(as.numeric(input$geoloc_lon), as.numeric(input$geoloc_lat), label = "Você está aqui!")
   })
+
+# button for refresh the map ---------------------------------
+  observeEvent(input$atualizar, {
+
+    output$mymap <- renderLeaflet({
+
+      shape_fundao <- query_gtfs(linha = input$linha, ida_volta = input$sentido)
+
+      pontos <- query_sppo(linha = input$linha)
+
+      req(input$geoloc_lon)
+
+      req(input$geoloc_lat)
+
+      leaflet() %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
+        addPolylines(data = sf::st_zm(shape_fundao)) %>%
+        setView(as.numeric(input$geoloc_lon), as.numeric(input$geoloc_lat), zoom = 16) %>%
+        addCircleMarkers(
+          data = pontos,
+          color = 'red',
+          fillOpacity = 0.5,
+          radius = 3,
+          lng = ~longitude,
+          lat = ~latitude
+        ) %>%
+        addMarkers(as.numeric(input$geoloc_lon), as.numeric(input$geoloc_lat), label = "Você está aqui!")
+    })
+
+
+
+
+
+  })
+
+
+
+
+
+
+
 
 }
 
